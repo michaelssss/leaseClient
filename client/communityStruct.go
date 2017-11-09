@@ -1,4 +1,4 @@
-package main
+package leaseClient
 
 type Community struct {
 	payload int

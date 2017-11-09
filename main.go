@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"os"
 	"net"
+	"leaseClient/client"
 )
 
 func main() {
 	ticket := time.NewTicker(time.Second * 20)
 	func() {
 		for _ = range ticket.C {
-			client := Client{ClientName: "bbbbb", ClientAddr: getAddr().(*net.IPNet).IP.String()}
+			client := leaseClient.Client{ClientName: "company", ClientAddr: getAddr().(*net.IPNet).IP.String()}
 			fmt.Println(client)
-			client.MakeDiscover()
+			client.MakeDiscover("michaelssss.com:8888")
 		}
 	}()
 }

@@ -1,4 +1,4 @@
-package main
+package leaseClient
 
 import (
 	"net"
@@ -10,12 +10,12 @@ type Client struct {
 	ClientAddr string
 }
 type ClientOperations interface {
-	MakeDiscover()
-	Renew()
+	MakeDiscover(ip string)
+	Renew(ip string)
 }
 
-func (client *Client) MakeDiscover() {
-	conn, err := net.Dial("tcp", "47.89.21.243:8888")
+func (client *Client) MakeDiscover(ip string) {
+	conn, err := net.Dial("tcp", ip)
 	defer conn.Close()
 	result, _ := json.Marshal(client)
 	if nil != err {
@@ -24,6 +24,6 @@ func (client *Client) MakeDiscover() {
 	content := Community{len(result), result}.ToByte()
 	conn.Write(content)
 }
-func (client *Client) Renew() {
-	client.MakeDiscover()
+func (client *Client) Renew(ip string) {
+	client.MakeDiscover(ip)
 }
