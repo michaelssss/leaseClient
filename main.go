@@ -1,7 +1,6 @@
 package main
 
 import (
-	"leaseServer/domain"
 	"time"
 	"fmt"
 	"os"
@@ -12,7 +11,7 @@ func main() {
 	ticket := time.NewTicker(time.Second * 20)
 	func() {
 		for _ = range ticket.C {
-			client := domain.Client{ClientName: "bbbbb", ClientAddr: getAddr().(*net.IPNet).IP.String()}
+			client := Client{ClientName: "bbbbb", ClientAddr: getAddr().(*net.IPNet).IP.String()}
 			fmt.Println(client)
 			client.MakeDiscover()
 		}
