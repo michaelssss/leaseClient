@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type SignatureBase struct {
+type signatureBase struct {
 	Format           string
 	AccessKey        string
 	Version          string
@@ -24,7 +24,7 @@ type sign interface {
 	ToStringSignMap() map[string]string
 }
 
-func (signture *SignatureBase) ToStringSignMap() map[string]string {
+func (signture *signatureBase) ToStringSignMap() map[string]string {
 	sMap := make(map[string]string)
 	sMap["Format"] = signture.Format
 	sMap["Version"] = signture.Version
@@ -52,8 +52,8 @@ func Sign(sMap map[string]string, accessKey string) string {
 	mac.Write([]byte(StringToSign))
 	return base64.StdEncoding.EncodeToString(mac.Sum(nil))
 }
-func New(AccessKey string, AccessId string) SignatureBase {
+func SignatureBase(AccessKey string, AccessId string) signatureBase {
 	now := time.Now().UTC().Format("2006-01-02T15:04:05Z")
-	base := SignatureBase{"JSON", AccessKey, "2015-01-09", AccessId, "HMAC-SHA1", now, "1.0", now}
+	base := signatureBase{"JSON", AccessKey, "2015-01-09", AccessId, "HMAC-SHA1", now, "1.0", now}
 	return base
 }

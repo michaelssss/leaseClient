@@ -8,8 +8,8 @@ import (
 	"net/http"
 )
 
-type GetAllDomains struct {
-	Base       *SignatureBase
+type getAllDomains struct {
+	Base       *signatureBase
 	Action     string
 	DomainName string
 }
@@ -17,13 +17,13 @@ type operation interface {
 	Fire() string
 }
 
-func (getalldomain *GetAllDomains) ToStringSignMap() map[string]string {
+func (getalldomain *getAllDomains) ToStringSignMap() map[string]string {
 	sMap := getalldomain.Base.ToStringSignMap()
 	sMap["Action"] = getalldomain.Action
 	sMap["DomainName"] = getalldomain.DomainName
 	return sMap
 }
-func (getalldomains *GetAllDomains) Fire() string {
+func (getalldomains *getAllDomains) Fire() string {
 	map1 := getalldomains.ToStringSignMap()
 	strs := make([]string, 0)
 	map1["Signature"] = Sign(map1, getalldomains.Base.AccessKey)
@@ -45,4 +45,7 @@ func (getalldomains *GetAllDomains) Fire() string {
 	}
 	defer resp.Body.Close()
 	return string(b)
+}
+func GetAllDomains(domainName string, base *signatureBase) getAllDomains {
+	return getAllDomains{base, "DescribeDomainRecords", domainName}
 }

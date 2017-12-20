@@ -19,8 +19,8 @@ func main() {
 	ss := os.Args
 	accessKey := ss[1]
 	accessId := ss[2]
-	base := alidns.New(accessKey, accessId)
-	GetAllDomains := alidns.GetAllDomains{&base, "DescribeDomainRecords", "liangyumingblog.com"}
+	base := alidns.SignatureBase(accessKey, accessId)
+	GetAllDomains := alidns.GetAllDomains("liangyumingblog.com", &base)
 	//fmt.Println(url.QueryEscape(alidns.Sign(GetAllDomains.ToStringSignMap())))
 	json1 := GetAllDomains.Fire()
 	fmt.Println(json1)
