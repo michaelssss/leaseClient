@@ -4,14 +4,15 @@ import (
 	"sort"
 	"net/url"
 	"strings"
-	"fmt"
 	"crypto/sha1"
 	"crypto/hmac"
 	"encoding/base64"
+	"time"
 )
 
 type SignatureBase struct {
 	Format           string
+	AccessKey        string
 	Version          string
 	AccessKeyId      string
 	SignatureMethod  string
@@ -34,7 +35,7 @@ func (signture *SignatureBase) ToStringSignMap() map[string]string {
 	sMap["SignatureNonce"] = signture.SignatureNonce
 	return sMap
 }
-func Sign(sMap map[string]string) string {
+func Sign(sMap map[string]string, accessKey string) string {
 	strs := make([]string, 0)
 	for index, _ := range sMap {
 		strs = append(strs, index)
@@ -45,11 +46,14 @@ func Sign(sMap map[string]string) string {
 	for index, value := range strs {
 		strss = append(strss, url.QueryEscape(strs[index])+"="+url.QueryEscape(sMap[value]))
 	}
-	fmt.Println(strings.Join(strss, "&"))
 	StringToSign := "GET&" + url.QueryEscape("/") + "&" + url.QueryEscape(strings.Join(strss, "&"))
-	fmt.Println(StringToSign)
-	key := []byte("" + "&")
+	key := []byte( accessKey + "&")
 	mac := hmac.New(sha1.New, key)
 	mac.Write([]byte(StringToSign))
 	return base64.StdEncoding.EncodeToString(mac.Sum(nil))
+}
+func New(AccessKey string, AccessId string) SignatureBase {
+	now := time.Now().UTC().Format("2006-01-02T15:04:05Z")
+	base := SignatureBase{"JSON", AccessKey, "2015-01-09", AccessId, "HMAC-SHA1", now, "1.0", now}
+	return base
 }

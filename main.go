@@ -5,9 +5,6 @@ import (
 	"os"
 	"net"
 	"leaseClient/alidns"
-	"net/url"
-	"time"
-	"net/http"
 )
 
 func main() {
@@ -19,16 +16,14 @@ func main() {
 	//		client.MakeDiscover("127.0.0.1:8888")
 	//	}
 	//}()
-	now:=time.Now().UTC().Format("2006-01-02T15:04:05Z")
-	base := alidns.SignatureBase{"XML", "2015-01-09", "", "HMAC-SHA1", now, "1.0", "f59ed6a9-83fc-473b-9cc6-99c95df3856e"}
-	signarture := alidns.GetAllDomains{&base, "DescribeDomainRecords", "liangyumingblog.com"}
-	fmt.Println(url.QueryEscape(alidns.Sign(signarture.ToStringSignMap())))
-	fmt.Println(url.QueryEscape(now))
-	resp,err:=http.Get("http://alidns.aliyuncs.com/?Format=XML&Action=DescribeDomainRecords&AccessKeyId=LTAIvRMcO78UieFf&SignatureMethod=HMAC-SHA1&DomainName=liangyumingblog.com&SignatureNonce=f59ed6a9-83fc-473b-9cc6-99c95df3856e&Version=2015-01-09&SignatureVersion=1.0&Signature=ov4nFkxS02JkfgU9w%2FkJ95nHFuA%3D&Timestamp=2017-12-19T08%3A35%3A54Z")
-	if(err!=nil){
-		fmt.Println(err.Error())
-	}
-	fmt.Println(resp.Status)
+	ss := os.Args
+	accessKey := ss[1]
+	accessId := ss[2]
+	base := alidns.New(accessKey, accessId)
+	GetAllDomains := alidns.GetAllDomains{&base, "DescribeDomainRecords", "liangyumingblog.com"}
+	//fmt.Println(url.QueryEscape(alidns.Sign(GetAllDomains.ToStringSignMap())))
+	json1 := GetAllDomains.Fire()
+	fmt.Println(json1)
 }
 func getAddr() net.Addr {
 	addrs, err := net.InterfaceAddrs()
