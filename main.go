@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"os"
-	"net"
+	"leaseClient/client"
 	"leaseClient/alidns"
+	"fmt"
 )
 
 func main() {
@@ -19,29 +19,12 @@ func main() {
 	ss := os.Args
 	accessKey := ss[1]
 	accessId := ss[2]
+	communityKey := ss[3]
+	ipport := ss[4]
+	leaseClient.MakeDiscover(ipport, communityKey)
 	base := alidns.SignatureBase(accessKey, accessId)
 	GetAllDomains := alidns.GetAllDomains("liangyumingblog.com", &base)
 	//fmt.Println(url.QueryEscape(alidns.Sign(GetAllDomains.ToStringSignMap())))
 	json1 := GetAllDomains.Fire()
 	fmt.Println(json1)
-}
-func getAddr() net.Addr {
-	addrs, err := net.InterfaceAddrs()
-
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	for _, address := range addrs {
-
-		// 检查ip地址判断是否回环地址
-		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
-				return address
-			}
-
-		}
-	}
-	return nil
 }

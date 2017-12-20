@@ -2,28 +2,26 @@ package leaseClient
 
 import (
 	"net"
-	"encoding/json"
+	"fmt"
+	"io"
 )
 
-type Client struct {
-	ClientName string
-	ClientAddr string
-}
-type ClientOperations interface {
-	MakeDiscover(ip string)
-	Renew(ip string)
-}
-
-func (client *Client) MakeDiscover(ip string) {
+func MakeDiscover(ip string, key string) {
 	conn, err := net.Dial("tcp", ip)
 	defer conn.Close()
-	result, _ := json.Marshal(client)
 	if nil != err {
-		panic(err)
+		fmt.Println(err.Error())
 	}
-	content := Community{len(result), result}.ToByte()
-	conn.Write(content)
-}
-func (client *Client) Renew(ip string) {
-	client.MakeDiscover(ip)
+	conn.Write([]byte(key))
+	buf := make([]byte, 64)
+	publicIpByte := make([]byte, 0)
+	for {
+		i, err := conn.Read(buf)
+		if io.EOF == err {
+			break
+		}
+		publicIpByte = append(publicIpByte, buf[0:i]...)
+	}
+	ipp := net.ParseIP(string(publicIpByte)[0:9])
+	fmt.Println(ipp)
 }
