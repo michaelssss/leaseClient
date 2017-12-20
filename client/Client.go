@@ -4,11 +4,11 @@ import (
 	"net"
 	"fmt"
 	"io"
+	"strings"
 )
 
-func MakeDiscover(ip string, key string) {
+func MakeDiscover(ip string, key string) net.IP {
 	conn, err := net.Dial("tcp", ip)
-	defer conn.Close()
 	if nil != err {
 		fmt.Println(err.Error())
 	}
@@ -22,6 +22,5 @@ func MakeDiscover(ip string, key string) {
 		}
 		publicIpByte = append(publicIpByte, buf[0:i]...)
 	}
-	ipp := net.ParseIP(string(publicIpByte)[0:9])
-	fmt.Println(ipp)
+	return net.ParseIP(strings.Split(string(publicIpByte), ":")[0])
 }
