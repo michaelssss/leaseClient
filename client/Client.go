@@ -15,8 +15,12 @@ func MakeDiscover(ip string, key string) net.IP {
 	}
 	if nil != err {
 		fmt.Println(err.Error())
+		return net.ParseIP("")
 	}
-	conn.Write([]byte(key))
+	_, err = conn.Write([]byte(key))
+	if nil != err {
+		fmt.Println(err.Error())
+	}
 	buf := make([]byte, 64)
 	publicIpByte := make([]byte, 0)
 	for {

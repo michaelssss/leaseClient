@@ -44,7 +44,7 @@ func main() {
 	func() {
 		for _ = range ticket.C {
 			ip := leaseClient.MakeDiscover(ipport, communityKey)
-			if ip.String() != nowIp {
+			if nil != ip && ip.String() != nowIp {
 
 				base := alidns.SignatureBase(accessKey, accessId)
 				getAllDomains := alidns.GetAllDomains("liangyumingblog.com", &base)
