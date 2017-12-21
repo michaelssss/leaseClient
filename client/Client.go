@@ -5,10 +5,14 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 )
 
 func MakeDiscover(ip string, key string) net.IP {
 	conn, err := net.Dial("tcp", ip)
+	if nil == conn {
+		fmt.Println("connect to ", ip, " failed ,time is ", time.Now().String())
+	}
 	if nil != err {
 		fmt.Println(err.Error())
 	}
