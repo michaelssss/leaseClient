@@ -10,6 +10,10 @@ import (
 
 func MakeDiscover(ip string, key string) net.IP {
 	conn, err := net.Dial("tcp", ip)
+	defer func() {
+		err := conn.Close()
+		fmt.Println(err.Error())
+	}()
 	if nil == conn {
 		fmt.Println("connect to ", ip, " failed ,time is ", time.Now().String())
 	}
