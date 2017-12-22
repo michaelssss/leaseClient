@@ -11,9 +11,11 @@ import (
 func MakeDiscover(ip string, key string) net.IP {
 	conn, err := net.Dial("tcp", ip)
 	defer func() {
-		err := conn.Close()
-		if nil != err {
-			fmt.Println(err.Error())
+		if nil != conn {
+			err := conn.Close()
+			if nil != err {
+				fmt.Println(err.Error())
+			}
 		}
 	}()
 	if nil == conn {
