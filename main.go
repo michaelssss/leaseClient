@@ -2,10 +2,11 @@ package main
 
 import (
 	"os"
-	"leaseClient/alidns"
 	"fmt"
-	"encoding/json"
 	"leaseClient/client"
+	"io/ioutil"
+	"encoding/json"
+	"leaseClient/alidns"
 	"time"
 )
 
@@ -33,13 +34,19 @@ type Resp struct {
 }
 
 var nowIp string
+var config leaseClient.Config
 
 func main() {
 	ss := os.Args
-	accessKey := ss[1]
-	accessId := ss[2]
-	communityKey := ss[3]
-	ipport := ss[4]
+	configPath := ss[1]
+	config = leaseClient.NewConfig()
+	config.Parse(readFile(configPath))
+	accessKey := config.Get("accessKey")
+	accessId := config.Get("accessId")
+	communityKey := config.Get("communityKey")
+	ipport := config.Get("ipport")
+	rr := config.Get("rr")
+	domain := config.Get("domain")
 	ticket := time.NewTicker(time.Second * 20)
 	func() {
 		for _ = range ticket.C {
@@ -47,7 +54,7 @@ func main() {
 			if nil != ip && ip.String() != nowIp {
 
 				base := alidns.SignatureBase(accessKey, accessId)
-				getAllDomains := alidns.GetAllDomains("liangyumingblog.com", &base)
+				getAllDomains := alidns.GetAllDomains(domain, &base)
 
 				json1 := getAllDomains.Fire()
 				resp := Resp{}
@@ -56,16 +63,24 @@ func main() {
 					fmt.Println(err.Error())
 				}
 				for _, value := range resp.DomainRecords.Record {
-					if value.RR == "home" {
+					if value.RR == rr {
 						deleteDomain := alidns.DeleteRecord(&base, value.RecordId)
 						deleteDomain.Fire()
 					}
 				}
-				addRecord := alidns.AddRecord("liangyumingblog.com", &base, ip)
+				addRecord := alidns.AddRecord(domain, rr, &base, ip)
 				addRecord.Fire()
 				nowIp = ip.String()
 			}
 		}
 	}()
+}
 
+func readFile(path string) []byte {
+	file, err := ioutil.ReadFile(path)
+	if nil != err {
+		fmt.Errorf(err.Error())
+		panic(err)
+	}
+	return file
 }
