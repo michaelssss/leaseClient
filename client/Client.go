@@ -1,9 +1,9 @@
 package leaseClient
 
 import (
-	"net"
 	"fmt"
 	"io"
+	"net"
 	"strings"
 	"time"
 )
@@ -38,5 +38,9 @@ func MakeDiscover(ip string, key string) net.IP {
 		}
 		publicIpByte = append(publicIpByte, buf[0:i]...)
 	}
-	return net.ParseIP(strings.Split(string(publicIpByte), ":")[0])
+
+	theip := string(publicIpByte)
+	start := strings.LastIndex(theip, "[")
+	end := strings.LastIndex(theip, "]")
+	return net.ParseIP(theip[start+1 : end])
 }

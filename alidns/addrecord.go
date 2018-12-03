@@ -1,12 +1,12 @@
 package alidns
 
 import (
-	"net"
-	"net/url"
-	"strings"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 type addRecord struct {
@@ -40,7 +40,7 @@ func (addRecord *addRecord) Fire() string {
 	}
 	strings.Join(strss, "&")
 	resp, err := http.Get("http://alidns.aliyuncs.com/?" + strings.Join(strss, "&"))
-	if (err != nil) {
+	if err != nil {
 		fmt.Println(err.Error())
 	}
 	b, err := ioutil.ReadAll(resp.Body)
@@ -51,5 +51,5 @@ func (addRecord *addRecord) Fire() string {
 	return string(b)
 }
 func AddRecord(domainName string, rr string, base *signatureBase, ip net.IP) addRecord {
-	return addRecord{base, "AddDomainRecord", domainName, rr, "A", ip.String()}
+	return addRecord{base, "AddDomainRecord", domainName, rr, "AAAA", ip.String()}
 }
