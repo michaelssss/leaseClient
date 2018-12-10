@@ -1,12 +1,12 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"leaseClient/client"
-	"io/ioutil"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"leaseClient/alidns"
+	"leaseClient/client"
+	"os"
 	"time"
 )
 
@@ -43,6 +43,7 @@ func main() {
 	config.Parse(readFile(configPath))
 	accessKey := config.Get("accessKey")
 	accessId := config.Get("accessId")
+	ttype := config.Get("type")
 	communityKey := config.Get("communityKey")
 	ipport := config.Get("ipport")
 	rr := config.Get("rr")
@@ -68,7 +69,7 @@ func main() {
 						deleteDomain.Fire()
 					}
 				}
-				addRecord := alidns.AddRecord(domain, rr, &base, ip)
+				addRecord := alidns.AddRecord(domain, rr, ttype, &base, ip)
 				addRecord.Fire()
 				nowIp = ip.String()
 			}
@@ -79,7 +80,7 @@ func main() {
 func readFile(path string) []byte {
 	file, err := ioutil.ReadFile(path)
 	if nil != err {
-		fmt.Errorf(err.Error())
+		fmt.Println(err.Error())
 		panic(err)
 	}
 	return file

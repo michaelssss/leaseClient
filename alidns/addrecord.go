@@ -50,6 +50,6 @@ func (addRecord *addRecord) Fire() string {
 	defer resp.Body.Close()
 	return string(b)
 }
-func AddRecord(domainName string, rr string, base *signatureBase, ip net.IP) addRecord {
-	return addRecord{base, "AddDomainRecord", domainName, rr, "AAAA", ip.String()}
+func AddRecord(domainName string, rr string, ttype string, base *signatureBase, ip net.IP) addRecord {
+	return addRecord{base, "AddDomainRecord", domainName, rr, ttype, ip.String()}
 }

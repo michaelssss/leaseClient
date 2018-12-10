@@ -38,9 +38,15 @@ func MakeDiscover(ip string, key string) net.IP {
 		}
 		publicIpByte = append(publicIpByte, buf[0:i]...)
 	}
-
 	theip := string(publicIpByte)
-	start := strings.LastIndex(theip, "[")
-	end := strings.LastIndex(theip, "]")
-	return net.ParseIP(theip[start+1 : end])
+	if isIPv6(theip) {
+		start := strings.LastIndex(theip, "[")
+		end := strings.LastIndex(theip, "]")
+		return net.ParseIP(theip[start+1 : end])
+	} else {
+		return net.ParseIP(strings.Split(theip, ":")[0])
+	}
+}
+func isIPv6(ip string) bool {
+	return strings.Contains(ip, "[")
 }
