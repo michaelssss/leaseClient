@@ -44,14 +44,12 @@ func main() {
 	accessKey := config.Get("accessKey")
 	accessId := config.Get("accessId")
 	ttype := config.Get("type")
-	communityKey := config.Get("communityKey")
-	ipport := config.Get("ipport")
 	rr := config.Get("rr")
 	domain := config.Get("domain")
-	ticket := time.NewTicker(time.Second * 20)
+	ticket := time.NewTicker(time.Minute * 1)
 	func() {
 		for _ = range ticket.C {
-			ip := leaseClient.MakeDiscover(ipport, communityKey)
+			ip := leaseClient.MakeDiscover()
 			if nil != ip && ip.String() != nowIp {
 
 				base := alidns.SignatureBase(accessKey, accessId)
