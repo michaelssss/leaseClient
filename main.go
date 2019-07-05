@@ -7,6 +7,8 @@ import (
 	"leaseClient/alidns"
 	"leaseClient/client"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -46,33 +48,50 @@ func main() {
 	ttype := config.Get("type")
 	rr := config.Get("rr")
 	domain := config.Get("domain")
-	ticket := time.NewTicker(time.Minute * 1)
-	func() {
-		for _ = range ticket.C {
-			ip := leaseClient.MakeDiscover()
-			if nil != ip && ip.String() != nowIp {
-
-				base := alidns.SignatureBase(accessKey, accessId)
-				getAllDomains := alidns.GetAllDomains(domain, &base)
-
-				json1 := getAllDomains.Fire()
-				resp := Resp{}
-				err := json.Unmarshal([]byte(json1), &resp)
-				if nil != err {
-					fmt.Println(err.Error())
-				}
-				for _, value := range resp.DomainRecords.Record {
-					if value.RR == rr {
-						deleteDomain := alidns.DeleteRecord(&base, value.RecordId)
-						deleteDomain.Fire()
-					}
-				}
-				addRecord := alidns.AddRecord(domain, rr, ttype, &base, ip)
-				addRecord.Fire()
-				nowIp = ip.String()
+	sig := make(chan os.Signal, 1)
+	exitSig := false
+	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	go func() {
+		for s := range sig {
+			switch s {
+			case syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT:
+				fmt.Println("退出", s)
+				exitSig = true
+			default:
+				fmt.Println("other", s)
 			}
 		}
 	}()
+mainLoop:
+	for {
+		ip := leaseClient.MakeDiscover()
+		fmt.Println(ip)
+		if exitSig {
+			break mainLoop
+		}
+		if nil != ip && ip.String() != nowIp {
+
+			base := alidns.SignatureBase(accessKey, accessId)
+			getAllDomains := alidns.GetAllDomains(domain, &base)
+
+			json1 := getAllDomains.Fire()
+			resp := Resp{}
+			err := json.Unmarshal([]byte(json1), &resp)
+			if nil != err {
+				fmt.Println(err.Error())
+			}
+			for _, value := range resp.DomainRecords.Record {
+				if value.RR == rr {
+					deleteDomain := alidns.DeleteRecord(&base, value.RecordId)
+					deleteDomain.Fire()
+				}
+			}
+			addRecord := alidns.AddRecord(domain, rr, ttype, &base, ip)
+			addRecord.Fire()
+			nowIp = ip.String()
+		}
+		time.Sleep(time.Second * 5)
+	}
 }
 
 func readFile(path string) []byte {

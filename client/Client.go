@@ -6,19 +6,22 @@ import (
 	"net"
 	"net/http"
 	"strings"
+	"time"
 )
 
 func MakeDiscover() net.IP {
 	ipdiscoverlist := []string{"http://ifconfig.me/ip", "https://ifconfig.co/ip"}
-
-	rsp, err := http.Get("http://ifconfig.me/ip")
-	for index := 0; err != nil && index < len(ipdiscoverlist); index++ {
+	http.DefaultClient.Timeout = time.Second
+	var rsp *http.Response
+	var err error
+	for index := 0; index < len(ipdiscoverlist); index++ {
 		rsp, err = http.Get(ipdiscoverlist[index])
 		if nil == err {
 			break
 		}
 	}
 	if nil != err {
+		fmt.Println(err.Error())
 		return nil
 	}
 	err = nil
