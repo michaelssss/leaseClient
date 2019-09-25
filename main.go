@@ -65,7 +65,7 @@ func main() {
 mainLoop:
 	for {
 		ip := leaseClient.MakeDiscover()
-		fmt.Println(ip)
+		fmt.Println("query ip is" + ip.String())
 		if exitSig {
 			break mainLoop
 		}
@@ -90,6 +90,7 @@ mainLoop:
 			addRecord.Fire()
 			nowIp = ip.String()
 		}
+		fmt.Println("now ip is " + nowIp)
 		time.Sleep(time.Second * 20)
 	}
 }
