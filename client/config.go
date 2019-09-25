@@ -23,10 +23,12 @@ func (cfg *config) Parse(bytes []byte) config {
 		fmt.Println(len(stringss))
 		if len(stringss) > 1 {
 			for index := range stringss {
-				sss := strings.Split(stringss[index], "=")
-				key := sss[0]
-				value := sss[1]
-				cfg.configMap[key] = value
+				if strings.Contains(stringss[index], "=") {
+					sss := strings.Split(stringss[index], "=")
+					key := sss[0]
+					value := sss[1]
+					cfg.configMap[key] = value
+				}
 			}
 		}
 	}
