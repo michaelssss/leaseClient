@@ -9,7 +9,7 @@ import (
 )
 
 func MakeDiscover() net.IP {
-	ipdiscoverlist := []string{"http://v6.ip.zxinc.org/getip"}
+	ipdiscoverlist := []string{"http://ipv6.ip.sb"}
 	http.DefaultClient.Timeout = time.Second * 10
 	var rsp *http.Response
 	var err error
