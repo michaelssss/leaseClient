@@ -1,8 +1,8 @@
 package leaseClient
 
 import (
-	 "strings"
 	"fmt"
+	"strings"
 )
 
 type Config interface {
@@ -16,12 +16,17 @@ type config struct {
 }
 
 func (cfg *config) Parse(bytes []byte) config {
-	stringss := strings.Split(string(bytes), "\r\n")
-	for index := range stringss {
-		sss := strings.Split(stringss[index], "=")
-		key := sss[0]
-		value := sss[1]
-		cfg.configMap[key] = value
+	deliters := []string{"\r\n", "r", "\n"}
+	for deliter := range deliters {
+		stringss := strings.Split(string(bytes), deliters[deliter])
+		if len(stringss) > 1 {
+			for index := range stringss {
+				sss := strings.Split(stringss[index], "=")
+				key := sss[0]
+				value := sss[1]
+				cfg.configMap[key] = value
+			}
+		}
 	}
 	return *cfg
 }
