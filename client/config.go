@@ -27,8 +27,8 @@ func (cfg *config) Parse(bytes []byte) config {
 					key = strings.Replace(key, "\r", "", -1)
 					key = strings.Replace(key, "\n", "", -1)
 					value := strings.Replace(sss[1], " ", "", -1)
-					value = strings.Replace(key, "\r", "", -1)
-					value = strings.Replace(key, "\n", "", -1)
+					value = strings.Replace(value, "\r", "", -1)
+					value = strings.Replace(value, "\n", "", -1)
 					cfg.configMap[key] = value
 				}
 			}
