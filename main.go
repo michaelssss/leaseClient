@@ -66,14 +66,12 @@ func main() {
 mainLoop:
 	for {
 		ip := leaseClient.MakeDiscover()
-		fmt.Println("query ip is" + ip.String())
 		if exitSig {
 			break mainLoop
 		}
 		if nil != ip && ip.String() != nowIp {
 			base := alidns.SignatureBase(accessKey, accessId)
 			getAllDomains := alidns.GetAllDomains(domain, &base)
-
 			json1 := getAllDomains.Fire()
 			resp := Resp{}
 			err := json.Unmarshal([]byte(json1), &resp)
@@ -87,10 +85,9 @@ mainLoop:
 				}
 			}
 			addRecord := alidns.AddRecord(domain, rr, ttype, &base, ip)
-			fmt.Println(addRecord.Fire())
+			addRecord.Fire()
 			nowIp = ip.String()
 		}
-		fmt.Println("now ip is " + nowIp)
 		time.Sleep(time.Second * 20)
 	}
 }
