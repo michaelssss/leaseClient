@@ -19,6 +19,7 @@ func (cfg *config) Parse(bytes []byte) config {
 	deliters := []string{"\r\n", "r", "\n"}
 	for deliter := range deliters {
 		stringss := strings.Split(string(bytes), deliters[deliter])
+		fmt.Println(stringss)
 		if len(stringss) > 1 {
 			for index := range stringss {
 				sss := strings.Split(stringss[index], "=")
