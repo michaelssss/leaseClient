@@ -19,14 +19,16 @@ func (cfg *config) Parse(bytes []byte) config {
 	deliters := []string{"\r\n", "\r", "\n"}
 	for deliter := range deliters {
 		stringss := strings.Split(string(bytes), deliters[deliter])
-		fmt.Println(stringss)
-		fmt.Println(len(stringss))
 		if len(stringss) > 1 {
 			for index := range stringss {
 				if strings.Contains(stringss[index], "=") {
 					sss := strings.Split(stringss[index], "=")
-					key := sss[0]
-					value := sss[1]
+					key := strings.Replace(sss[0], " ", "", -1)
+					key = strings.Replace(key, "\r", "", -1)
+					key = strings.Replace(key, "\n", "", -1)
+					value := strings.Replace(sss[1], " ", "", -1)
+					value = strings.Replace(key, "\r", "", -1)
+					value = strings.Replace(key, "\n", "", -1)
 					cfg.configMap[key] = value
 				}
 			}
