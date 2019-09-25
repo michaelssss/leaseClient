@@ -29,5 +29,6 @@ func MakeDiscover() net.IP {
 		fmt.Println(err.Error())
 	}
 	theip := string(ipbyte)
+	fmt.Println(theip)
 	return net.ParseIP(theip)
 }
