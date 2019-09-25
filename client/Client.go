@@ -5,12 +5,11 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
-	"strings"
 	"time"
 )
 
 func MakeDiscover() net.IP {
-	ipdiscoverlist := []string{"http://ifconfig.me/ip", "https://ifconfig.co/ip"}
+	ipdiscoverlist := []string{"http://v6.ip.zxinc.org/getip"}
 	http.DefaultClient.Timeout = time.Second
 	var rsp *http.Response
 	var err error
@@ -30,14 +29,5 @@ func MakeDiscover() net.IP {
 		fmt.Println(err.Error())
 	}
 	theip := string(ipbyte)
-	if isIPv6(theip) {
-		start := strings.LastIndex(theip, "[")
-		end := strings.LastIndex(theip, "]")
-		return net.ParseIP(theip[start+1 : end])
-	} else {
-		return net.ParseIP(strings.Split(theip, ":")[0])
-	}
-}
-func isIPv6(ip string) bool {
-	return strings.Contains(ip, "[")
+	return net.ParseIP(theip)
 }
