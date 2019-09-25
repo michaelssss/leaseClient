@@ -20,6 +20,7 @@ func (cfg *config) Parse(bytes []byte) config {
 	for deliter := range deliters {
 		stringss := strings.Split(string(bytes), deliters[deliter])
 		fmt.Println(stringss)
+		fmt.Println(deliters[deliter])
 		if len(stringss) > 1 {
 			for index := range stringss {
 				sss := strings.Split(stringss[index], "=")
