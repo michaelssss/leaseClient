@@ -48,6 +48,7 @@ func main() {
 	ttype := config.Get("type")
 	rr := config.Get("rr")
 	domain := config.Get("domain")
+	config.ToString()
 	sig := make(chan os.Signal, 1)
 	exitSig := false
 	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
@@ -70,7 +71,6 @@ mainLoop:
 			break mainLoop
 		}
 		if nil != ip && ip.String() != nowIp {
-
 			base := alidns.SignatureBase(accessKey, accessId)
 			getAllDomains := alidns.GetAllDomains(domain, &base)
 
