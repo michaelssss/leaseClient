@@ -25,18 +25,20 @@ var myDialContext = func(ctx context.Context, network, addr string) (net.Conn, e
 
 func MakeDiscover() net.IP {
 	ipdiscoverlist := []string{"http://ip.zxinc.org/getip"}
-	http.DefaultClient.Timeout = time.Second * 10
-	http.DefaultClient.Transport = &http.Transport{
-		Proxy:                 http.ProxyFromEnvironment,
-		DialContext:           myDialContext,
-		MaxIdleConns:          20,
-		IdleConnTimeout:       20 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
+	var client = &http.Client{
+		Transport: &http.Transport{
+			Proxy:                 http.ProxyFromEnvironment,
+			DialContext:           myDialContext,
+			MaxIdleConns:          20,
+			IdleConnTimeout:       90 * time.Second,
+			TLSHandshakeTimeout:   10 * time.Second,
+			ExpectContinueTimeout: 1 * time.Second,
+		},
 	}
 	var rsp *http.Response
 	var err error
 	for index := 0; index < len(ipdiscoverlist); index++ {
-		rsp, err = http.Get(ipdiscoverlist[index])
+		rsp, err = client.Get(ipdiscoverlist[index])
 		if nil == err {
 			break
 		}
