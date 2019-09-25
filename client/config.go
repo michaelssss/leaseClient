@@ -16,7 +16,7 @@ type config struct {
 }
 
 func (cfg *config) Parse(bytes []byte) config {
-	deliters := []string{"\r\n", "r", "\n"}
+	deliters := []string{"\r\n", "\r", "\n"}
 	for deliter := range deliters {
 		stringss := strings.Split(string(bytes), deliters[deliter])
 		fmt.Println(stringss)
