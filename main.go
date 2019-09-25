@@ -87,7 +87,7 @@ mainLoop:
 				}
 			}
 			addRecord := alidns.AddRecord(domain, rr, ttype, &base, ip)
-			addRecord.Fire()
+			fmt.Println(addRecord.Fire())
 			nowIp = ip.String()
 		}
 		fmt.Println("now ip is " + nowIp)
