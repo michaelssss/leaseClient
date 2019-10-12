@@ -3,18 +3,20 @@ package leaseClient
 import (
 	"fmt"
 	"net"
-	"os"
 )
 
 func MakeDiscover() net.IP {
-	host, _ := os.Hostname()
-	addrs, _ := net.LookupIP(host)
-	for _, addr := range addrs {
-		if ipv6 := addr.To4(); ipv6 == nil && addr.IsGlobalUnicast() && !addr.IsLinkLocalUnicast() {
-			fmt.Println(addr.String())
-			return addr
+	interfaces, _ := net.Interfaces()
+	for _, i := range interfaces {
+		addrs, _ := i.Addrs()
+		for _, addr := range addrs {
+			if ipv6, ok := addr.(*net.IPNet); ok && nil == ipv6.IP.To4() && ipv6.IP.IsGlobalUnicast() && !ipv6.IP.IsLinkLocalUnicast() {
+				fmt.Println(ipv6.IP.String())
+				return ipv6.IP
+			}
 		}
 	}
+
 	//return ""
 	return nil
 }
