@@ -10,9 +10,9 @@ func MakeDiscover() net.IP {
 	host, _ := os.Hostname()
 	addrs, _ := net.LookupIP(host)
 	for _, addr := range addrs {
-		if ipv6 := addr.To16(); ipv6 != nil && !ipv6.IsLinkLocalUnicast() {
-			fmt.Println(ipv6.String())
-			return ipv6
+		if ipv6 := addr.To4(); ipv6 != nil && ipv6.IsGlobalUnicast() && !ipv6.IsLinkLocalUnicast() {
+			fmt.Println(addr.String())
+			return addr
 		}
 	}
 	//return ""
