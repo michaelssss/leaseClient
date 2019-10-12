@@ -66,6 +66,7 @@ func main() {
 mainLoop:
 	for {
 		ip := leaseClient.MakeDiscover()
+		fmt.Println(ip.String())
 		if exitSig {
 			break mainLoop
 		}
