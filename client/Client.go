@@ -10,7 +10,7 @@ func MakeDiscover() net.IP {
 		defer conn.Close()
 	}
 	if nil == err {
-		return conn.LocalAddr().(*net.IPNet).IP
+		return conn.LocalAddr().(*net.TCPAddr).IP
 	}
 	return nil
 }
